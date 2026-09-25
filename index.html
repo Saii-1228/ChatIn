@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat In - Messages</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Authentication Screen -->
+    <div id="auth-screen" class="screen">
+        <div class="auth-container">
+            <h1 class="brand-logo">Chat In</h1>
+            <p class="auth-subtitle">Connect with your friends.</p>
+            
+            <form id="auth-form">
+                <input type="text" id="auth-name" placeholder="Full Name (Sign up only)" class="hidden">
+                <input type="email" id="auth-email" placeholder="Email address" required>
+                <input type="password" id="auth-password" placeholder="Password" required>
+                <button type="submit" id="auth-btn">Log In</button>
+            </form>
+
+            <div class="auth-switch">
+                <span id="auth-switch-text">Don't have an account?</span>
+                <button type="button" id="auth-switch-btn">Sign up</button>
+            </div>
+            <div id="auth-error" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Main Application Screen -->
+    <div id="app-screen" class="screen hidden">
+        
+        <!-- Sidebar Navigation (Instagram Style) -->
+        <nav class="side-nav">
+            <div class="nav-logo">
+                <i class="fa-brands fa-rocketchat"></i>
+            </div>
+            <ul class="nav-links">
+                <li class="active" title="Home"><i class="fa-solid fa-house"></i><span class="nav-text">Home</span></li>
+                <li id="nav-search" title="Search"><i class="fa-solid fa-magnifying-glass"></i><span class="nav-text">Search</span></li>
+                <li title="Profile"><i class="fa-regular fa-user"></i><span class="nav-text">Profile</span></li>
+                <li title="Settings"><i class="fa-solid fa-gear"></i><span class="nav-text">Settings</span></li>
+            </ul>
+            <div class="nav-bottom">
+                <li id="logout-btn" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i><span class="nav-text">Logout</span></li>
+            </div>
+        </nav>
+
+        <!-- Contacts / Chat List Panel -->
+        <aside class="chat-list-panel" id="chat-list-panel">
+            <div class="panel-header">
+                <h2 id="current-user-name">Messages</h2>
+                <i class="fa-regular fa-pen-to-square new-chat-icon"></i>
+            </div>
+            
+            <!-- Search Bar inside Contacts -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="user-search-input" placeholder="Search users...">
+                </div>
+            </div>
+
+            <div class="contacts-list" id="contacts-list">
+                <!-- Contact items injected via JS -->
+            </div>
+        </aside>
+
+        <!-- Active Chat Window -->
+        <main class="chat-window" id="chat-window">
+            
+            <!-- Empty State -->
+            <div id="empty-chat-state" class="empty-state">
+                <div class="empty-icon"><i class="fa-regular fa-paper-plane"></i></div>
+                <h2>Your Messages</h2>
+                <p>Send private photos and messages to a friend.</p>
+            </div>
+
+            <!-- Active Chat Interface -->
+            <div id="active-chat-interface" class="hidden">
+                <header class="chat-header">
+                    <div class="back-btn" id="mobile-back-btn">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=User&background=005cff&color=fff" alt="Avatar" class="chat-header-avatar" id="active-chat-avatar">
+                    <div class="chat-header-info">
+                        <h3 id="active-chat-name">User Name</h3>
+                        <span class="status-indicator">Active now</span>
+                    </div>
+                    <div class="chat-header-actions">
+                        <i class="fa-solid fa-phone"></i>
+                        <i class="fa-solid fa-video"></i>
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+                </header>
+
+                <div class="messages-container" id="messages-container">
+                    <!-- Messages injected via JS -->
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-face-smile emoji-icon"></i>
+                        <input type="text" id="message-input" placeholder="Message..." autocomplete="off">
+                        <div class="input-actions">
+                            <i class="fa-solid fa-microphone"></i>
+                            <i class="fa-regular fa-image"></i>
+                        </div>
+                    </div>
+                    <button id="send-btn" class="send-btn hidden">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Load JavaScript as Module for Firebase v10 -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
