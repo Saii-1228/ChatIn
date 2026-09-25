@@ -238,3 +238,29 @@ function resetChatState() {
 mobileBackBtn.addEventListener('click', () => {
     chatWindow.classList.remove('active-mobile');
 });
+// ==========================================
+// 8. SIDEBAR NAVIGATION LOGIC
+// ==========================================
+const navItems = document.querySelectorAll('.nav-links li');
+const searchInputField = document.getElementById('user-search-input');
+
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        // Remove the blue active color from all icons
+        navItems.forEach(nav => nav.classList.remove('active'));
+        
+        // Add the blue active color to the clicked icon
+        item.classList.add('active');
+        
+        // Figure out which tab was clicked
+        const tabName = item.getAttribute('title');
+        
+        if (tabName === 'Search') {
+            // Automatically select the search bar so the user can start typing
+            searchInputField.focus();
+        } else if (tabName === 'Profile' || tabName === 'Settings') {
+            // Show a popup since we haven't built these extra screens yet
+            alert(`${tabName} feature coming soon!`);
+        }
+    });
+});
