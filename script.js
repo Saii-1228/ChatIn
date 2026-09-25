@@ -9,20 +9,17 @@ import {
     serverTimestamp, doc, setDoc, getDocs, where, getDoc 
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-// ==========================================
 // 1. FIREBASE CONFIGURATION
-// Replace this object with your Firebase keys
-// ==========================================
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyA9cLu-9OuhNkUlio0yZHuFCdfInQUqQHA",
+  authDomain: "chat-in-965bf.firebaseapp.com",
+  projectId: "chat-in-965bf",
+  storageBucket: "chat-in-965bf.firebasestorage.app",
+  messagingSenderId: "559327448989",
+  appId: "1:559327448989:web:85880fa2bcc223f21ee974",
+  measurementId: "G-YEMMNQBNFW"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -33,10 +30,7 @@ let currentChatId = null;
 let currentChatUser = null;
 let unsubscribeMessages = null;
 
-// ==========================================
 // 2. DOM ELEMENTS
-// ==========================================
-// Auth Elements
 const authScreen = document.getElementById('auth-screen');
 const appScreen = document.getElementById('app-screen');
 const authForm = document.getElementById('auth-form');
@@ -47,14 +41,10 @@ const authBtn = document.getElementById('auth-btn');
 const authSwitchBtn = document.getElementById('auth-switch-btn');
 const authSwitchText = document.getElementById('auth-switch-text');
 const authError = document.getElementById('auth-error');
-
-// App Elements
 const logoutBtn = document.getElementById('logout-btn');
 const currentUserNameHeader = document.getElementById('current-user-name');
 const contactsList = document.getElementById('contacts-list');
 const searchInput = document.getElementById('user-search-input');
-
-// Chat Elements
 const emptyChatState = document.getElementById('empty-chat-state');
 const activeChatInterface = document.getElementById('active-chat-interface');
 const chatWindow = document.getElementById('chat-window');
@@ -65,9 +55,7 @@ const messageInput = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 const mobileBackBtn = document.getElementById('mobile-back-btn');
 
-// ==========================================
 // 3. AUTHENTICATION LOGIC
-// ==========================================
 let isLoginMode = true;
 
 authSwitchBtn.addEventListener('click', () => {
@@ -98,7 +86,6 @@ authForm.addEventListener('submit', async (e) => {
         } else {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(userCredential.user, { displayName: name });
-            // Save user to Firestore
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 uid: userCredential.user.uid,
                 name: name,
@@ -115,7 +102,6 @@ logoutBtn.addEventListener('click', () => {
     signOut(auth);
 });
 
-// Auth State Observer
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
@@ -131,9 +117,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// ==========================================
 // 4. USERS & CHAT LIST LOGIC
-// ==========================================
 async function loadUsers(searchQuery = '') {
     const usersRef = collection(db, "users");
     const q = query(usersRef);
@@ -143,10 +127,7 @@ async function loadUsers(searchQuery = '') {
     
     querySnapshot.forEach((doc) => {
         const userData = doc.data();
-        // Don't show current user in the list
         if (userData.uid === currentUser.uid) return;
-        
-        // Basic search filtering
         if (searchQuery && !userData.name.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
         const contactEl = document.createElement('div');
@@ -168,22 +149,15 @@ searchInput.addEventListener('input', (e) => {
     loadUsers(e.target.value);
 });
 
-// ==========================================
 // 5. ACTIVE CHAT LOGIC
-// ==========================================
 async function openChat(targetUser) {
     currentChatUser = targetUser;
-    
-    // UI Updates
     emptyChatState.classList.add('hidden');
     activeChatInterface.classList.remove('hidden');
     activeChatName.textContent = targetUser.name;
     activeChatAvatar.src = targetUser.avatar;
-    
-    // Mobile layout toggle
     chatWindow.classList.add('active-mobile');
 
-    // Generate a unique Chat ID based on both UIDs
     currentChatId = currentUser.uid > targetUser.uid 
         ? currentUser.uid + "_" + targetUser.uid 
         : targetUser.uid + "_" + currentUser.uid;
@@ -193,7 +167,6 @@ async function openChat(targetUser) {
 
 function loadMessages() {
     if (unsubscribeMessages) unsubscribeMessages();
-    
     messagesContainer.innerHTML = '';
     
     const messagesRef = collection(db, "chats", currentChatId, "messages");
@@ -212,20 +185,12 @@ function loadMessages() {
 function renderMessage(data) {
     const msgEl = document.createElement('div');
     msgEl.classList.add('message');
-    
-    if (data.senderId === currentUser.uid) {
-        msgEl.classList.add('sent');
-    } else {
-        msgEl.classList.add('received');
-    }
-    
+    msgEl.classList.add(data.senderId === currentUser.uid ? 'sent' : 'received');
     msgEl.textContent = data.text;
     messagesContainer.appendChild(msgEl);
 }
 
-// ==========================================
 // 6. SENDING MESSAGES
-// ==========================================
 async function sendMessage() {
     const text = messageInput.value.trim();
     if (!text || !currentChatId) return;
@@ -246,26 +211,17 @@ async function sendMessage() {
     }
 }
 
-// Input Event Listeners
 messageInput.addEventListener('input', () => {
-    if (messageInput.value.trim().length > 0) {
-        sendBtn.classList.remove('hidden');
-    } else {
-        sendBtn.classList.add('hidden');
-    }
+    sendBtn.classList.toggle('hidden', messageInput.value.trim().length === 0);
 });
 
 messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
+    if (e.key === 'Enter') sendMessage();
 });
 
 sendBtn.addEventListener('click', sendMessage);
 
-// ==========================================
-// 7. UTILITIES & UI INTERACTIONS
-// ==========================================
+// 7. UTILITIES
 function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
